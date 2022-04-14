@@ -1,0 +1,53 @@
+from django.shortcuts import render
+from rest_framework import generics
+
+from .models import Department, Role, Employee
+from .serializers import DepartmentListSerializer, RoleSerializer, EmployeeDetailSerializer, \
+    DepartmentDetailSerializer, EmployeeShortSerializer
+from .permissions import IsAdminOrReadOnly
+
+
+class DepartmentList(generics.ListCreateAPIView):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentListSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+
+class DepartmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentDetailSerializer
+    #permission_classes = [IsAdminOrReadOnly]
+
+
+class RoleList(generics.ListCreateAPIView):
+    serializer_class = RoleSerializer
+    # permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        department_pk = self.kwargs.get('pk')
+        return Role.objects.filter(department__pk=department_pk)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"department_id": self.kwargs.get('pk')})
+        return context
+
+
+class RoleDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = RoleSerializer
+    # permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        return Role.objects.filter(pk=pk).prefetch_related('employees')
+
+
+class EmployeeDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeDetailSerializer
+    # permission_classes = [IsAdminOrReadOnly]
+
+class EmployeeList(generics.ListCreateAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeShortSerializer
+
