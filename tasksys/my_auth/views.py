@@ -1,14 +1,15 @@
+from django.db.models import Count
 from django.shortcuts import render
 from rest_framework import generics
 
 from .models import Department, Role, Employee
 from .serializers import DepartmentListSerializer, RoleSerializer, EmployeeDetailSerializer, \
-    DepartmentDetailSerializer, EmployeeShortSerializer
+    DepartmentDetailSerializer, EmployeeListSerializer
 from .permissions import IsAdminOrReadOnly
 
 
 class DepartmentList(generics.ListCreateAPIView):
-    queryset = Department.objects.all()
+    queryset = Department.objects.annotate(num_employees=Count('roles__employees'))
     serializer_class = DepartmentListSerializer
     permission_classes = [IsAdminOrReadOnly]
 
@@ -47,7 +48,8 @@ class EmployeeDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EmployeeDetailSerializer
     # permission_classes = [IsAdminOrReadOnly]
 
+
 class EmployeeList(generics.ListCreateAPIView):
     queryset = Employee.objects.all()
-    serializer_class = EmployeeShortSerializer
+    serializer_class = EmployeeListSerializer
 

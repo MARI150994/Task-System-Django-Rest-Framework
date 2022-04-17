@@ -2,10 +2,10 @@ from .models import Employee, Role, Department
 from rest_framework import serializers
 
 
-class EmployeeShortDetailSerializer(serializers.HyperlinkedModelSerializer):
+class EmployeeListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'email', 'url']
+        fields = ['first_name', 'last_name', 'email']
 
 
 class EmployeeDetailSerializer(serializers.HyperlinkedModelSerializer):
@@ -15,15 +15,8 @@ class EmployeeDetailSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['first_name', 'last_name', 'email', 'birthday', 'gender', 'phone', 'role', ]
 
 
-class EmployeeShortSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = Employee
-        fields = ['first_name', 'last_name', 'email', 'role']
-
-
 class RoleSerializer(serializers.HyperlinkedModelSerializer):
-    employees = EmployeeShortDetailSerializer(many=True, read_only=True)
+    employees = EmployeeListSerializer(many=True, read_only=True)
 
     class Meta:
         model = Role
@@ -36,9 +29,11 @@ class RoleSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class DepartmentListSerializer(serializers.HyperlinkedModelSerializer):
+    num_employees = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Department
-        fields = ['name', 'description', 'url']
+        fields = ['name', 'description', 'url', 'num_employees']
 
 
 class DepartmentDetailSerializer(serializers.ModelSerializer):

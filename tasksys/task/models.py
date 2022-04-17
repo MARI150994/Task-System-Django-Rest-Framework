@@ -69,7 +69,7 @@ class Project(TaskInfo):
 
 
 # The task need for statistics time for every task for every executor and for link to project
-class Task(TaskInfo):
+class Task(TaskInfo, MPTTModel):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
     executor = models.ForeignKey(get_user_model(),
                                  on_delete=models.PROTECT,
