@@ -9,5 +9,5 @@ urlpatterns = [
     path('<int:pk>/roles', views.RoleList.as_view(), name='role-list'),
     path('roles/<int:pk>', views.RoleDetail.as_view(), name='role-detail'),
     path('users/', views.EmployeeList.as_view(), name='employee-list'),
-    path('user/<int:pk>', views.EmployeeDetail.as_view(), name='employee-detail'),
+    path('users/<int:pk>', views.EmployeeDetail.as_view(), name='employee-detail'),
 ]

@@ -129,18 +129,18 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
-
-DJOSER = {
-    'PASSWORD_RESET_CONFIRM_URL': '#/password-reset/{uid}/{token}',
-    'USERNAME_RESET_CONFIRM_URL': '#/username-reset/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': True,
-    'ACTIVATION_URL': '#activate/{uid}/{token}',
-    'SEND_CONFIRMATION_EMAIL': True,
-    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
-    'SERIALIZERS': {
-        # 'user_create': 'my_auth.serializers.EmployeeDetailSerializer',
-    },
-}
+#
+# DJOSER = {
+#     'PASSWORD_RESET_CONFIRM_URL': '#/password-reset/{uid}/{token}',
+#     'USERNAME_RESET_CONFIRM_URL': '#/username-reset/{uid}/{token}',
+#     'SEND_ACTIVATION_EMAIL': True,
+#     'ACTIVATION_URL': '#activate/{uid}/{token}',
+#     'SEND_CONFIRMATION_EMAIL': True,
+#     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+#     'SERIALIZERS': {
+#         # 'user_create': 'my_auth.serializers.EmployeeDetailSerializer',
+#     },
+# }
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'

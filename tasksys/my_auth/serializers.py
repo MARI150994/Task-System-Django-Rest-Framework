@@ -5,7 +5,7 @@ from rest_framework import serializers
 class EmployeeListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['first_name', 'last_name', 'email', 'url', 'role']
 
 
 class EmployeeDetailSerializer(serializers.HyperlinkedModelSerializer):

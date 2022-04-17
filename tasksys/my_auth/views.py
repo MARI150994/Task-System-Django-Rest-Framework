@@ -49,7 +49,7 @@ class EmployeeDetail(generics.RetrieveUpdateDestroyAPIView):
     # permission_classes = [IsAdminOrReadOnly]
 
 
-class EmployeeList(generics.ListCreateAPIView):
+class EmployeeList(generics.ListAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeListSerializer
 
