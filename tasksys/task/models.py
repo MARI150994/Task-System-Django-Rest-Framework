@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 
 from django.db import models
 from django.urls import reverse
@@ -23,8 +23,8 @@ class TaskInfo(models.Model):
         ('Very low', 'Very low'),
     )
 
-    name = models.CharField('Name of task', max_length=120, unique=True)
-    description = models.CharField('Description', max_length=300)
+    name = models.CharField(max_length=120, unique=True)
+    description = models.CharField(max_length=300)
     status = models.CharField(max_length=40, choices=STATUS_CHOICES, verbose_name='Status of project/task', blank=True)
     priority = models.CharField(max_length=40, choices=PRIORITY_CHOICES, verbose_name='Priority of project/task')
     start_date = models.DateTimeField('Time when project/task was created', auto_now_add=True)
@@ -45,6 +45,7 @@ class Project(TaskInfo):
                                 on_delete=models.PROTECT,
                                 related_name='projects',
                                 verbose_name='Users hwo can delegate and update')
+    duration = models.DurationField('Duration of project', null=True, blank=True)
 
     def __str__(self):
         return f'Project:{self.name}, status: {self.status}'
@@ -58,11 +59,14 @@ class Project(TaskInfo):
         return super().save(*args, **kwargs)
 
     def change_status(self, new_status):
-        # TO DO maybe use auto_now_add=True
-        # if finished we must know time for task, it's a self.active_time plus time when task was finished
-        if new_status != self.status:
-            if new_status == 'Finished' or new_status == 'Canceled':
-                self.finish_time = datetime.now()
+        # if close project
+        if new_status == 'Finished' or new_status == 'Canceled':
+            self.finish_date = timezone.now()
+            self.duration = self.finish_date - self.start_date
+        # if project start again
+        if new_status == 'In work':
+            self.finish_date = None
+            self.duration = None
 
     class Meta:
         ordering = ['-start_date']
@@ -91,13 +95,26 @@ class Task(TaskInfo, MPTTModel):
     # calculate time if form was changed
     def change_status(self, new_status):
         if new_status == 'Finished' or new_status == 'Canceled':
-            self.finish_date = datetime.now()
-            self.active_time = self.start_date - self.finish_date - self.passive_time
+            if self.status == 'In work':
+                self.finish_date = timezone.now()
+                if self.passive_time:
+                    self.active_time = self.finish_date - self.start_date - self.passive_time
+                else:
+                    self.active_time = self.finish_date - self.start_date
+            if self.status == 'Awaiting':
+                if self.passive_time:
+                    self.active_time = self.start_await_date - self.start_date - self.passive_time
+                else:
+                    self.active_time = self.start_await_date - self.start_date
         if new_status == 'Awaiting':
-            self.start_await_date = datetime.now()
+            self.start_await_date = timezone.now()
         if new_status == 'In work' and self.status == 'Awaiting':
-            self.passive_time = self.start_await_date + datetime.now()
-        self.start_await_time = None
+            self.passive_time = timezone.now() - self.start_await_date
+            self.start_await_time = None
+        # restart project after closed
+        if new_status == 'In work':
+            self.finish_date = None
+            self.active_time = None
 
     class Meta:
         ordering = ['-start_date']

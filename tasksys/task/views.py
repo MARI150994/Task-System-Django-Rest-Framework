@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 
 from .models import Project, Task
@@ -29,6 +30,11 @@ class TaskList(generics.ListCreateAPIView):
         project_pk = self.kwargs.get('pk')
         return Task.objects.filter(project__pk=project_pk).filter(parent__isnull=True)
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"project_id": self.kwargs.get('pk')})
+        return context
+
 
 class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
@@ -44,7 +50,13 @@ class SubtaskList(generics.ListCreateAPIView):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context.update({"parent_id": self.kwargs.get('pk')})
+        task_id = self.kwargs.get('pk')
+        task = get_object_or_404(Task, pk=task_id)
+        project = task.project
+        context.update(
+            {"parent_id": task_id,
+             "project": project}
+        )
         return context
 
 
