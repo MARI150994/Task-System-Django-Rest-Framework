@@ -3,6 +3,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
 
 from .models import Project, Task
+from .tasks import send_mail_task
 
 
 class TaskShortSerializer(serializers.HyperlinkedModelSerializer):
@@ -63,6 +64,16 @@ class ProjectListSerializer(serializers.HyperlinkedModelSerializer):
         if data['planned_date'] <= timezone.now():
             raise serializers.ValidationError("Planned time must occur after start")
         return data
+
+    def create(self, validated_data):
+        prj = validated_data.get('name')
+        planned_date = validated_data.get('planned_date')
+        manager = validated_data.get('manager')
+        print(manager)
+        subject = f'Created project {prj}'
+        message = f'You are create a new project: {prj} with planned date: {planned_date}'
+        send_mail_task(subject, message, [manager])
+        return super().create(validated_data)
 
 
 class ProjectDetailSerializer(serializers.HyperlinkedModelSerializer):
