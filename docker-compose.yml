@@ -6,7 +6,7 @@ services:
 
   celery:
     build: ./tasksys
-    command: celery -A core worker -l info
+    command: celery -A tasksys worker -l info
     volumes:
       - ./tasksys/:/usr/src/app/
     environment:
@@ -18,7 +18,7 @@ services:
 
   celery-beat:
     build: ./tasksys
-    command: celery -A core beat -l info
+    command: celery -A tasksys beat -l info
     volumes:
       - ./tasksys/:/usr/src/app/
     environment:
