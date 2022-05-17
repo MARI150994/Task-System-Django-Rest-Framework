@@ -9,7 +9,7 @@ logger = get_task_logger(__name__)
 
 
 @shared_task
-def send_mail_task(subject, message, users):
+def send_mail_task(subject: str, message: str, users: str):
     logger.info(f'Send mail task to {users}, text: {message}, time: {timezone.now()}')
     email = EmailMessage(subject, message, to=[users])
     email.send()
