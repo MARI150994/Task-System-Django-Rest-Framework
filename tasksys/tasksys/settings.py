@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from celery.schedules import crontab
+
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -149,6 +151,14 @@ EMAIL_HOST_USER = 'mariia.utkinaa@gmail.com'
 EMAIL_HOST_PASSWORD = 'ghuglsomjgettpnl'
 
 # Celery settings
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_TIMEZONE = 'Europe/Moscow'
+CELERY_BEAT_SCHEDULE = {
+    # Check all tasks every weekday in 9am
+    'reminder_task': {
+        'task': 'task.tasks.reminder_task',
+        #'schedule': crontab(hour=6, minute=0, day_of_week='mon-fri')
+        'schedule': crontab(minute='*/1') # for testing celery
+    }
+}
