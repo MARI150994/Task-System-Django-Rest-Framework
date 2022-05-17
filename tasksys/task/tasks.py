@@ -26,5 +26,9 @@ def reminder_task():
         subject = f'Reminder abou task {task.id}'
         message = f'Deadline of your task {task.name} is {task.planned_date}'
         users = task.executor
-        email = EmailMessage(subject, message, to=[users])
+        logger.info(f'Send email, subject: {subject},'
+                    f'message: {message},'
+                    f'users: {users}')
+        # email = EmailMessage(subject, message, to=[users])
+        # email.send()
     logger.info(f'Tasks finished')
