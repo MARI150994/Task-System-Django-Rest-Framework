@@ -5,11 +5,10 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from mptt.models import MPTTModel, TreeForeignKey
 
-
-# abstract class for Task and Project
 from .tasks import send_mail_task
 
 
+# abstract class for Task and Project
 class TaskInfo(models.Model):
     STATUS_CHOICES = (
         ('In work', 'In work'),
@@ -70,6 +69,11 @@ class Project(TaskInfo):
         if new_status == 'In work':
             self.finish_date = None
             self.duration = None
+        subject = f'Change status of project {self.name}'
+        message = f'You change status of project: {self.name} {self.get_absolute_url()}' \
+                  f'new status is "{new_status}"'
+        users = self.manager.email
+        send_mail_task(subject, message, [users])
 
     class Meta:
         ordering = ['-start_date']
