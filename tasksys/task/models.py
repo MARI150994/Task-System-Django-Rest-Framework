@@ -7,6 +7,9 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 
 # abstract class for Task and Project
+from .tasks import send_mail_task
+
+
 class TaskInfo(models.Model):
     STATUS_CHOICES = (
         ('In work', 'In work'),
