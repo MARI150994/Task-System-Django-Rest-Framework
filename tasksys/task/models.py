@@ -1,8 +1,11 @@
+from django.http import HttpRequest
 from django.utils import timezone
 
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from mptt.models import MPTTModel, TreeForeignKey
 
 from .tasks import send_mail_task
@@ -54,11 +57,6 @@ class Project(TaskInfo):
 
     def get_absolute_url(self):
         return reverse('project-detail', kwargs={'pk': self.pk})
-
-    def save(self, *args, **kwargs):
-        if not self.status:
-            self.status = 'In work'
-        return super().save(*args, **kwargs)
 
     def change_status(self, new_status):
         # if close project
@@ -128,3 +126,24 @@ class Task(TaskInfo, MPTTModel):
 
     class MPTTMeta:
         order_insertion_by = ['name']
+
+
+# send message if change or create Task and Project
+@receiver(post_save, sender=Project)
+@receiver(post_save, sender=Task)
+def create_project_message(sender, instance, created, **kwargs):
+    if created:
+        if sender == Project:
+            subject = f'Create new project'
+            message = f'You are create new project: "{instance.name}", ' \
+                      f'with planned date {instance.planned_date}.\n' \
+                      f'Link: {instance.get_absolute_url()}'
+            users = instance.manager.email
+        else:
+            subject = f'New task for you'
+            message = f'You have a new task: "{instance.name}" ' \
+                      f'related to the project "{instance.project.name}"\n' \
+                      f'with planned date {instance.planned_date}.\n' \
+                      f'Link: {instance.get_absolute_url()}'
+            users = instance.executor.email
+        send_mail_task(subject, message, [users])
