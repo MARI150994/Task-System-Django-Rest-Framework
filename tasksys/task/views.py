@@ -10,6 +10,15 @@ class ProjectList(generics.ListCreateAPIView):
     serializer_class = ProjectListSerializer
     # permission_classes = [IsManagerOrReadOnly]
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        user = context['request'].user
+        print('\033[31m Current USER:', user)
+        print('\033[31m Current USER ID:', user.id)
+        context.update({"user": user})
+        return context
+
+
 
 class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.all()

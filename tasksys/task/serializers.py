@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 
 from .models import Project, Task
-from .tasks import send_mail_task
 
 
 class TaskShortSerializer(serializers.HyperlinkedModelSerializer):
@@ -56,15 +56,26 @@ class SubTaskSerializer(TaskSerializer):
 
 
 class ProjectListSerializer(serializers.HyperlinkedModelSerializer):
+    manager = serializers.SerializerMethodField('_user')
+
     class Meta:
         model = Project
-        fields = ['name', 'description', 'priority', 'planned_date', 'manager', 'start_date', 'status', 'url']
+        fields = ['name', 'description', 'priority', 'planned_date',
+                  'manager', 'start_date', 'status', 'url']
+        read_only_fields = ['manager_id', 'url']
 
     def validate(self, data):
         # check that the planned time more than start_time
         if data['planned_date'] <= timezone.now():
             raise serializers.ValidationError("Planned time must occur after start")
         return data
+
+    def _user(self, obj):
+        u = get_user_model().objects.get(pk=5)
+        print('\033[31m Context', self.context)
+        user = self.context.get('user', None)
+        print('\033[31m Current USER', user)
+        return u
 
 
 class ProjectDetailSerializer(serializers.HyperlinkedModelSerializer):
