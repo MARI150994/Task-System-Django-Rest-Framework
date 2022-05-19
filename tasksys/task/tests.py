@@ -5,12 +5,12 @@ from django.test import TestCase
 from django.utils import timezone
 from django.utils.dateparse import parse_date, parse_datetime, parse_time, parse_duration
 from rest_framework.reverse import reverse
-from rest_framework.test import APIClient, APITestCase
+from rest_framework.test import APIClient, APITestCase, APITransactionTestCase
 
 from .models import Project
 
 
-class ProjectSerializerModelTest(APITestCase):
+class ProjectSerializerModelTest(APITransactionTestCase):
     fixtures = ['initial_data.json']
 
     def setUp(self):

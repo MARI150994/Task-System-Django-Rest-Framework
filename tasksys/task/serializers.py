@@ -23,9 +23,10 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
                   'planned_date', 'priority', 'status',
                   'project', 'parent', 'children',
                   'active_time', 'passive_time', 'start_await_date',
-                  'finish_date')
+                  'finish_date', 'start_date')
         read_only_fields = ('project', 'parent', 'children', 'active_time',
-                            'passive_time', 'start_await_date', 'finish_date')
+                            'passive_time', 'start_await_date', 'finish_date',
+                            'start_date')
 
     def update(self, instance, validated_data):
         # if status of task was changed call function

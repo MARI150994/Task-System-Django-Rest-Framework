@@ -82,8 +82,8 @@ class Task(TaskInfo, MPTTModel):
     # time when executor select 'task in await'
     start_await_date = models.DateTimeField(null=True, blank=True)
     # it will be calculated when task 'closed' or 'finished'
-    active_time = models.DurationField(null=True, blank=True)
-    passive_time = models.DurationField(null=True, blank=True)
+    active_time = models.DurationField(null=True, blank=True, default=0)
+    passive_time = models.DurationField(null=True, blank=True, default=0)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
 
     def __str__(self):
@@ -97,24 +97,24 @@ class Task(TaskInfo, MPTTModel):
         if new_status == 'Finished' or new_status == 'Canceled':
             if self.status == 'In work':
                 self.finish_date = timezone.now()
-                if self.passive_time:
-                    self.active_time = self.finish_date - self.start_date - self.passive_time
-                else:
-                    self.active_time = self.finish_date - self.start_date
+                self.active_time = self.finish_date - self.start_date - self.passive_time
+
             if self.status == 'Awaiting':
-                if self.passive_time:
-                    self.active_time = self.start_await_date - self.start_date - self.passive_time
-                else:
-                    self.active_time = self.start_await_date - self.start_date
+                self.finish_date = timezone.now()
+                self.passive_time += self.finish_date - self.start_await_date
+                self.active_time = self.start_await_date - self.passive_time - self.start_date
+                self.start_await_date = None
+
         if new_status == 'Awaiting':
             self.start_await_date = timezone.now()
+
         if new_status == 'In work' and self.status == 'Awaiting':
-            self.passive_time = timezone.now() - self.start_await_date
-            self.start_await_time = None
+            self.passive_time += timezone.now() - self.start_await_date
+            self.start_await_date = None
+
         # restart project after closed
-        if new_status == 'In work':
+        if new_status == 'In work' and self.status in ('Canceled', 'Finished'):
             self.finish_date = None
-            self.active_time = None
 
     class Meta:
         ordering = ['-start_date']

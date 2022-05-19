@@ -158,7 +158,7 @@ CELERY_BEAT_SCHEDULE = {
     # Check all tasks every weekday in 9am
     'reminder_task': {
         'task': 'task.tasks_beat.reminder_task',
-        #'schedule': crontab(hour=6, minute=0, day_of_week='mon-fri')
-        'schedule': crontab(minute='*/1') # for testing celery
+        'schedule': crontab(hour=6, minute=0, day_of_week='mon-fri')
+        # 'schedule': crontab(minute='*/1') # for testing celery
     }
 }
