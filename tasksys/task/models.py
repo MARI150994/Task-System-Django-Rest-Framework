@@ -67,11 +67,6 @@ class Project(TaskInfo):
         if new_status == 'In work':
             self.finish_date = None
             self.duration = None
-        subject = f'Change status of project {self.name}'
-        message = f'You change status of project: {self.name} {self.get_absolute_url()}' \
-                  f'new status is "{new_status}"'
-        users = self.manager.email
-        send_mail_task(subject, message, [users])
 
     class Meta:
         ordering = ['-start_date']

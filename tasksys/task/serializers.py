@@ -65,15 +65,6 @@ class ProjectListSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError("Planned time must occur after start")
         return data
 
-    # def create(self, validated_data):
-    #     prj = validated_data.get('name')
-    #     planned_date = validated_data.get('planned_date')
-    #     manager = validated_data.get('manager').email
-    #     subject = f'Created project {prj}'
-    #     message = f'You are create a new project: {prj} with planned date: {planned_date}'
-    #     send_mail_task(subject, message, manager)
-    #     return super().create(validated_data)
-
 
 class ProjectDetailSerializer(serializers.HyperlinkedModelSerializer):
     if not isinstance(serializers.CurrentUserDefault(), AnonymousUser):
