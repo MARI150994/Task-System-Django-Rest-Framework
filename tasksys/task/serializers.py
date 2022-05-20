@@ -36,6 +36,7 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
+        # validated_data['executor_id'] = 4
         project_id = self.context['project_id']
         validated_data['project_id'] = project_id
         return Task.objects.create(**validated_data)
@@ -85,7 +86,7 @@ class ProjectDetailSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('name', 'description', 'priority', 'planned_date',
                   'finish_date', 'manager', 'start_date', 'status',
                   'tasks', 'duration')
-        read_only_fields = ('tasks', 'finish_date', 'duration')
+        read_only_fields = ('tasks', 'finish_date', 'duration', 'manager')
 
     def update(self, instance, validated_data):
         # if status of task was changed call function

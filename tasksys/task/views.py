@@ -38,12 +38,14 @@ class TaskList(generics.ListCreateAPIView):
 
 
 class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
+    # permission_classes = [IsManagerOrHeadOrReadOnly]
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
 
 
 class SubtaskList(generics.ListCreateAPIView):
     serializer_class = SubTaskSerializer
+    # permission_classes = [IsOwnerOrReadOnly]
 
     def get_queryset(self):
         task_pk = self.kwargs.get('pk')

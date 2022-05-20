@@ -1,4 +1,5 @@
 import json
+from requests.auth import HTTPBasicAuth
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -10,7 +11,7 @@ from rest_framework.test import APIClient, APITestCase, APITransactionTestCase
 from .models import Project
 
 
-class ProjectSerializerModelTest(APITransactionTestCase):
+class ProjectSerializerModelTest(APITestCase):
     fixtures = ['initial_data.json']
 
     def setUp(self):
@@ -45,12 +46,11 @@ class ProjectSerializerModelTest(APITransactionTestCase):
     def test_project_create_from_view_good_request(self):
         response = self.client.post(
             '/task/projects/', {
-                'manager': self.user_url,
                 'name': 'test name 2',
                 'description': 'test description 2',
                 'priority': 'High',
                 'planned_date': self.planned_date,
-            }
+            }, headers={'Authorization': 'Token 6009e1e66d8c5ef268b345091fe7d3c3794e49f1'}
         )
         data = json.loads(response.content)
         self.assertEqual(response.status_code, 201)

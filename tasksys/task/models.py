@@ -82,8 +82,8 @@ class Task(TaskInfo, MPTTModel):
     # time when executor select 'task in await'
     start_await_date = models.DateTimeField(null=True, blank=True)
     # it will be calculated when task 'closed' or 'finished'
-    active_time = models.DurationField(null=True, blank=True, default=0)
-    passive_time = models.DurationField(null=True, blank=True, default=0)
+    active_time = models.DurationField(null=True, blank=True, default=timezone.timedelta())
+    passive_time = models.DurationField(null=True, blank=True, default=timezone.timedelta())
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
 
     def __str__(self):
