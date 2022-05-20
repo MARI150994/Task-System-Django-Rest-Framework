@@ -63,7 +63,6 @@ class ProjectListSerializer(serializers.HyperlinkedModelSerializer):
         read_only_fields = ['url']
 
     def validate(self, data):
-        user = self.context.get('user', None)
         # check that the planned time more than start_time
         if data['planned_date'] <= timezone.now():
             raise serializers.ValidationError("Planned time must occur after start")
