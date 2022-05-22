@@ -1,21 +1,22 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from .models import Project, Task
+from .permissions import IsManagerOrReadOnly, IsOwnerOrReadOnly
 from .serializers import ProjectListSerializer, ProjectDetailSerializer, TaskSerializer, SubTaskSerializer
 
 
 class ProjectList(generics.ListCreateAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectListSerializer
-    # permission_classes = [IsManagerOrReadOnly]
-
+    permission_classes = [IsManagerOrReadOnly & IsAuthenticated | IsAdminUser]
 
 
 class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectDetailSerializer
-    # permission_classes = [IsManagerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly & IsAuthenticated | IsAdminUser]
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
@@ -24,6 +25,7 @@ class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class TaskList(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
+
     # permission_classes = [IsManagerOrReadOnly]
 
     # only task with generale tasks(created by manager)
@@ -45,6 +47,7 @@ class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class SubtaskList(generics.ListCreateAPIView):
     serializer_class = SubTaskSerializer
+
     # permission_classes = [IsOwnerOrReadOnly]
 
     def get_queryset(self):
@@ -61,6 +64,3 @@ class SubtaskList(generics.ListCreateAPIView):
              "project": project}
         )
         return context
-
-
-
