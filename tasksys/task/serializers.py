@@ -64,8 +64,8 @@ class ProjectListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Project
         fields = ['name', 'description', 'priority', 'planned_date',
-                  'start_date', 'status', 'url']
-        read_only_fields = ['url']
+                  'start_date', 'status', 'url', 'manager']
+        read_only_fields = ['url', 'manager']
 
     def validate(self, data):
         # check that the planned time more than start_time

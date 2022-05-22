@@ -1,5 +1,8 @@
-from .models import Employee, Role, Department
 from rest_framework import serializers
+
+from .models import Employee, Role, Department
+from task.models import Task, Project
+from task.serializers import TaskSerializer, ProjectDetailSerializer
 
 
 class EmployeeListSerializer(serializers.HyperlinkedModelSerializer):
@@ -9,10 +12,40 @@ class EmployeeListSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class EmployeeDetailSerializer(serializers.HyperlinkedModelSerializer):
+    tasks_await = serializers.SerializerMethodField()
+    tasks_work = serializers.SerializerMethodField()
+    projects_await = serializers.SerializerMethodField()
+    projects_work = serializers.SerializerMethodField()
 
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'email', 'birthday', 'gender', 'phone', 'role', ]
+        fields = ['first_name', 'last_name', 'email', 'birthday',
+                  'gender', 'phone', 'role', 'projects_await',
+                  'projects_work', 'tasks_await', 'tasks_work']
+
+    def get_tasks_await(self, obj):
+        tasks = Task.objects.filter(status='Awaiting').filter(executor=obj)
+        request = self.context['request']
+        ser = TaskSerializer(tasks, many=True, context={'request': request})
+        return ser.data
+
+    def get_tasks_work(self, obj):
+        tasks = Task.objects.filter(status='In work').filter(executor=obj)
+        request = self.context['request']
+        ser = TaskSerializer(tasks, many=True, context={'request': request})
+        return ser.data
+
+    def get_projects_await(self,  obj):
+        projects = Project.objects.filter(status='Awaiting').filter(manager=obj)
+        request = self.context['request']
+        ser = ProjectDetailSerializer(projects, many=True, context={'request': request})
+        return ser.data
+
+    def get_projects_work(self,  obj):
+        projects = Project.objects.filter(status='In work').filter(manager=obj)
+        request = self.context['request']
+        ser = ProjectDetailSerializer(projects, many=True, context={'request': request})
+        return ser.data
 
 
 class RoleSerializer(serializers.HyperlinkedModelSerializer):
