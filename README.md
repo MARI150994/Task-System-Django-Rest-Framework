@@ -32,9 +32,5 @@ API системы задач в разработке.
 |                          |                                                                                                                                                                                           |                                                                                          |                         |
 | auth/users               | Регистрация нового пользователя                                                                                                                                                           | first_name, last_name, email, password                                                   | GET, POST               |
 | auth/token/login         | Получить токен для пользователя, если данные введены правильно - вернет "auth_token": "7...84"                                                                                            | email, password                                                                          | POST                    |
-| auth/token/logout        | Удалить токен пользователя                                                                                                                                                                |                                                                                          | POST                    |
-
-
-В процессе разработки:
-1. фильтрация с помощью django-filters по закрытым/активным/ожидащим задачам
-2. статистика по активности отделов и сотрудников
+| auth/token/logout        | Удалить токен пользователя                                                                                                                                                                | Заголовок: Authorization:  Token <your token>                                            | GET                     |
+| auth/users/me            | Узнать пользователя по токену                                                                                                                                                             | Заголовок: Authorization:  Token <your token>                                            | GET                     |
