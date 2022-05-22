@@ -1,6 +1,6 @@
 from django.db.models import Count
-from django.shortcuts import render
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Department, Role, Employee
 from .serializers import DepartmentListSerializer, RoleSerializer, EmployeeDetailSerializer, \
@@ -11,18 +11,18 @@ from .permissions import IsAdminOrReadOnly
 class DepartmentList(generics.ListCreateAPIView):
     queryset = Department.objects.annotate(num_employees=Count('roles__employees'))
     serializer_class = DepartmentListSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticated & IsAdminOrReadOnly]
 
 
 class DepartmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Department.objects.all()
     serializer_class = DepartmentDetailSerializer
-    #permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticated & IsAdminOrReadOnly]
 
 
 class RoleList(generics.ListCreateAPIView):
     serializer_class = RoleSerializer
-    # permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticated & IsAdminOrReadOnly]
 
     def get_queryset(self):
         department_pk = self.kwargs.get('pk')
@@ -36,7 +36,7 @@ class RoleList(generics.ListCreateAPIView):
 
 class RoleDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RoleSerializer
-    # permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticated & IsAdminOrReadOnly]
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
@@ -46,10 +46,12 @@ class RoleDetail(generics.RetrieveUpdateDestroyAPIView):
 class EmployeeDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeDetailSerializer
-    # permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticated & IsAdminOrReadOnly]
 
 
 class EmployeeList(generics.ListAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeListSerializer
+    permission_classes = [IsAuthenticated & IsAdminOrReadOnly]
+
 
