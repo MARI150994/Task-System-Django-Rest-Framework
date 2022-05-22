@@ -8,29 +8,26 @@ class IsManagerOrReadOnly(permissions.BasePermission):
         return request.user.role.is_manager
 
 
-class IsManagerOrHeadOrReadOnly(permissions.BasePermission):
+class IsOwnerHeadExecutorOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        # check if user is header of executor/manager give permissions
-        user = request.user
-        user_department = user.role.department
-        if obj.owner.department == user_department and user.role.is_header:
+        user_department = request.user.role.department
+        executor_department = obj.executor.role.department
+        if executor_department == user_department and request.user.role.is_header:
             return True
-        return user.role.is_manager
+        return obj.creator == request.user or obj.executor == request.user
 
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
-    """
-    Custom permission to only allow owners of an object to edit it.
-    """
-
+class IsCreatorOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
         if request.method in permissions.SAFE_METHODS:
             return True
-        print('OBJECT', obj)
+        return obj.creator == request.user
 
-        # Write permissions are only allowed to the owner of the snippet.
-        return obj.user == request.user
+
+class IsProjectOwnerOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.manager == request.user

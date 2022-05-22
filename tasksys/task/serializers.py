@@ -19,14 +19,14 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('name', 'description', 'url', 'executor',
+        fields = ('name', 'description', 'creator', 'url', 'executor',
                   'planned_date', 'priority', 'status',
                   'project', 'parent', 'children',
                   'active_time', 'passive_time', 'start_await_date',
                   'finish_date', 'start_date')
         read_only_fields = ('project', 'parent', 'children', 'active_time',
                             'passive_time', 'start_await_date', 'finish_date',
-                            'start_date')
+                            'start_date', 'creator')
 
     def update(self, instance, validated_data):
         # if status of task was changed call function
@@ -38,7 +38,9 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         # validated_data['executor_id'] = 4
         project_id = self.context['project_id']
+        creator_id = self.context['creator_id']
         validated_data['project_id'] = project_id
+        validated_data['creator_id'] = creator_id
         return Task.objects.create(**validated_data)
 
 
@@ -49,9 +51,11 @@ class SubTaskSerializer(TaskSerializer):
     def create(self, validated_data):
         parent_id = self.context['parent_id']
         project = self.context['project']
+        creator_id = self.context['creator_id']
         validated_data.update(
-            {"parent_id": parent_id,
-             "project": project}
+            {'parent_id': parent_id,
+             'project': project,
+             'creator_id': creator_id}
         )
         return Task.objects.create(**validated_data)
 

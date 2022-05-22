@@ -77,8 +77,7 @@ class Task(TaskInfo, MPTTModel):
     creator = models.ForeignKey(get_user_model(),
                                  on_delete=models.PROTECT,
                                  verbose_name='Who create this task',
-                                 related_name='created_tasks',
-                                null=True)
+                                 related_name='created_tasks')
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
     executor = models.ForeignKey(get_user_model(),
                                  on_delete=models.PROTECT,
