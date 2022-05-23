@@ -15,10 +15,19 @@ API системы задач на Django Rest Framework +  Celery.
 * Для реализации возможности создавать подзадачи в рамках одной задачи Task-SubTasks использована библиотека django-mptt.
 * Запросы должны содержать заголовок следующего вида: Authorization: Token <users token>
 * Рассылка сообщений в почте через celery/celery-beat
-* Для запуска понаобится docker, docker-compose, git.
-* Склонируйте данный репозиторий и запустите с docker командой: docker-compose up -d --build
-* Для лога можно использовать комнаду docker-compose logs -f
-* Откройте http://0.0.0.0:8000/<ресурс из из таблицы ниже>
+
+1. ## Запуск
+2. Клонируйте репозиторий
+3. Запустите сборку командой: 
+```shell
+docker-compose up -d --build
+```
+4. Для просомтра журнала используйте:
+```shell
+docker-compose logs -f
+```
+5. Откройте http://0.0.0.0:8000/swagger-ui/ для просмотра документации Swagger
+
 
 
 | endpoint                 | description                                                                                                                                                                               | field                                                                                    | methods                 |
