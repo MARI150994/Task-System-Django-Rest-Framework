@@ -151,3 +151,13 @@ CELERY_BEAT_SCHEDULE = {
         # 'schedule': crontab(minute='*/1') # for testing celery
     }
 }
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
+}

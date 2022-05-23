@@ -10,15 +10,12 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(  # new
     openapi.Info(
-        title="Snippets API",
+        title="Task System API",
         default_version='v1',
-        description="Test description",
-        terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@snippets.local"),
-        license=openapi.License(name="BSD License"),
     ),
     # url=f'{settings.APP_URL}/api/v3/',
-    patterns=[path('api/task/', include('task.urls')), ],
+    patterns=[path('api/task/', include('task.urls')),
+              path('api/company/',  include('my_auth.urls'))],
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
