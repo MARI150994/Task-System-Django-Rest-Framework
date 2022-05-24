@@ -67,17 +67,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tasksys.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'task_db',
-        'USER': 'user',
-        'PASSWORD': 'password',
-        'HOST': 'pg',
-        'PORT': '5432'
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
+        'HOST': os.environ.get('DB_HOST'),
     }
 }
 
