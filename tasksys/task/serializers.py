@@ -82,15 +82,12 @@ class ProjectListSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProjectDetailSerializer(serializers.HyperlinkedModelSerializer):
-    if not isinstance(serializers.CurrentUserDefault(), AnonymousUser):
-        user = serializers.CurrentUserDefault()
-
     class Meta:
         model = Project
-        fields = ('name', 'description', 'priority', 'planned_date',
+        fields = ('name', 'description', 'url', 'priority', 'planned_date',
                   'finish_date', 'manager', 'start_date', 'status',
                   'tasks', 'duration')
-        read_only_fields = ('tasks', 'finish_date', 'duration', 'manager')
+        read_only_fields = ('tasks', 'finish_date', 'duration', 'manager', 'url')
 
     def update(self, instance, validated_data):
         # if status of task was changed call function

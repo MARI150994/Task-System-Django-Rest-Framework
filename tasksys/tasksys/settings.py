@@ -149,7 +149,6 @@ CELERY_BEAT_SCHEDULE = {
     'reminder_task': {
         'task': 'task.tasks_beat.reminder_task',
         'schedule': crontab(hour=6, minute=0, day_of_week='mon-fri')
-        # 'schedule': crontab(minute='*/1') # for testing celery
     }
 }
 

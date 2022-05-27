@@ -15,7 +15,8 @@ schema_view = get_schema_view(  # new
     ),
     # url=f'{settings.APP_URL}/api/v3/',
     patterns=[path('api/task/', include('task.urls')),
-              path('api/company/',  include('my_auth.urls'))],
+              path('api/company/',  include('my_auth.urls')),
+              path('api/auth/', include('djoser.urls.authtoken'))],
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
