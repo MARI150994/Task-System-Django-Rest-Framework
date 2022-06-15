@@ -5,10 +5,8 @@ services:
     image: postgres
     ports:
       - "5432:5432"
-    environment:
-    - POSTGRES_USER=user
-    - POSTGRES_PASSWORD=password
-    - POSTGRES_DB=task_db
+    env_file:
+      - postgres.env
     volumes:
       - pg-data:/var/lib/postgresql/data/
 
@@ -20,14 +18,8 @@ services:
     command: celery -A tasksys worker -l INFO
     volumes:
       - ./tasksys/:/usr/src/app/
-    environment:
-      - DEBUG=1
-      - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
-      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
-      - DB_HOST=pg
-      - DB_NAME=task_db
-      - DB_USER=user
-      - DB_PASS=password
+    env_file:
+      - app.env
     depends_on:
       - redis
       - web
@@ -38,14 +30,8 @@ services:
     command: celery -A tasksys beat -l INFO
     volumes:
       - ./tasksys/:/usr/src/app/
-    environment:
-      - DEBUG=1
-      - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
-      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
-      - DB_HOST=pg
-      - DB_NAME=task_db
-      - DB_USER=user
-      - DB_PASS=password
+    env_file:
+      - app.env
     depends_on:
       - redis
       - pg
@@ -58,14 +44,8 @@ services:
       - ./tasksys:/usr/src/app
     ports:
       - '8000:8000'
-    environment:
-      - DEBUG=1
-      - DB_HOST=pg
-      - DB_NAME=task_db
-      - DB_USER=user
-      - DB_PASS=password
-      - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
-      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+    env_file:
+      - app.env
     depends_on:
       - redis
       - pg
