@@ -7,7 +7,6 @@ from .models import Project, Task
 
 
 class TaskShortSerializer(serializers.HyperlinkedModelSerializer):
-    # project = serializers.HyperlinkedRelatedField(view_name='project-detail', read_only=True)
 
     class Meta:
         model = Task
@@ -15,7 +14,6 @@ class TaskShortSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
-    # project = serializers.HyperlinkedRelatedField(view_name='project-detail', read_only=True)
 
     class Meta:
         model = Task
@@ -36,7 +34,6 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
         return super().update(instance, validated_data)
 
     def create(self, validated_data):
-        # validated_data['executor_id'] = 4
         project_id = self.context['project_id']
         creator_id = self.context['creator_id']
         validated_data['project_id'] = project_id

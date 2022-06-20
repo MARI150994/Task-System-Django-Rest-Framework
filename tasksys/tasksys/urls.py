@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+#settings for swagger
 schema_view = get_schema_view(  # new
     openapi.Info(
         title="Task System API",
@@ -21,6 +22,7 @@ schema_view = get_schema_view(  # new
     permission_classes=(permissions.AllowAny,),
 )
 
+# general url settings
 urlpatterns = [
     path('swagger-ui/', TemplateView.as_view(
         template_name='swaggerui/swaggerui.html',

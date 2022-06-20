@@ -31,8 +31,8 @@ class TaskList(generics.ListCreateAPIView):
 
     # only task with generale tasks(created by manager, not subtask)
     def get_queryset(self):
-        project_pk = self.kwargs.get('pk')
-        return Task.objects.filter(project__pk=project_pk).filter(level=0)
+        self.project_pk = self.kwargs.get('pk')
+        return Task.objects.filter(project_id=self.project_pk).filter(level=0)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
