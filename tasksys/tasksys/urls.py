@@ -1,12 +1,12 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework import permissions
-from rest_framework.schemas import get_schema_view
-from rest_framework.renderers import CoreJSONRenderer
-from rest_framework.schemas import get_schema_view
 from django.views.generic import TemplateView
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+
+from .views import api_root
+
 
 #settings for swagger
 schema_view = get_schema_view(  # new
@@ -31,6 +31,7 @@ urlpatterns = [
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
             schema_view.without_ui(cache_timeout=0),
             name='schema-json'),
+    path('', api_root),
     path('admin/', admin.site.urls),
     path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),
