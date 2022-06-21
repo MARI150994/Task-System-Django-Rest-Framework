@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
@@ -29,10 +31,17 @@ class TaskList(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated & IsManagerOrReadOnly]
 
+    # check project exists
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            self.project = Project.objects.get(id=self.kwargs.get('pk'))
+        except Project.DoesNotExist:
+            return JsonResponse({'detail': 'Project not found'})
+        return super().dispatch(request, *args, **kwargs)
+
     # only task with generale tasks(created by manager, not subtask)
     def get_queryset(self):
-        self.project_pk = self.kwargs.get('pk')
-        return Task.objects.filter(project_id=self.project_pk).filter(level=0)
+        return Task.objects.filter(project=self.project).filter(level=0)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
